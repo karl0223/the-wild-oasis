@@ -1,0 +1,12 @@
+# Styled Components
+
+1. npm i styled-components
+
+2. download vscode-styled-components extension
+
+const H1 = styled.h1`       --- tagged template literals (needs to start with Uppercase)
+  font-size: 30px;
+  font-weight: 600;
+`; 
+
+----------------------
