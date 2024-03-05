@@ -10,3 +10,25 @@ const H1 = styled.h1`       --- tagged template literals (needs to start with Up
 `; 
 
 ----------------------
+
+# Global Styles with Styled Components
+
+import { createGlobalStyle } from "styled-components";
+
+const GlobalStyles = createGlobalStyle``
+
+needs to be siblings to the other siblings to take effect
+
+
+## IF EXPERIENCING ERROR  --- error '{variable}' is assigned a value but never used
+set the no-used-vars and react/prop-types to warn
+
+rules: {
+"no-unused-vars": "warn",
+"react/prop-types": "warn",
+"react/jsx-no-target-blank": "off",
+"react-refresh/only-export-components": [
+    "warn",
+    { allowConstantExport: true },
+],
+},
