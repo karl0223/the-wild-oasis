@@ -32,3 +32,27 @@ rules: {
     { allowConstantExport: true },
 ],
 },
+
+----------------------
+
+# Styled Components and the 'css' Function
+
+import styled, { css } from "styled-components";
+
+const test = css`
+  text-align: center;
+  ${10 > 5 && "background-color: yellow"}
+`;
+
+
+<Heading as="h1">The Wild Oasis</Heading>           --- use 'as' as props to set the heading to <h1> or <h2> etc
+
+
+${(props) =>
+props.as === "h1" &&        --- receive the props
+css`
+    font-size: 3rem;
+    font-weight: 600;
+`}
+
+----------------------
