@@ -64,3 +64,23 @@ Row.defaultProps = {            --- used to set defaultProps
 };
 
 ----------------------
+
+# Building the App Layout
+
+make sure to return a fragment <> </> to not mess up the styling
+
+# make sure that the components are inside the app layout route
+
+<Routes>            --- Main route
+    <Route element={<AppLayout />}>
+    <Route index element={<Navigate replace to="dashboard" />} />
+    <Route path="dashboard" element={<Dashboard />} />
+    <Route path="bookings" element={<Bookings />} />
+    <Route path="cabins" element={<Cabins />} />
+    <Route path="users" element={<Users />} />
+    <Route path="settings" element={<Settings />} />
+    <Route path="account" element={<Account />} />
+</Route>
+
+-- check the applayout, header and sidebar
+----------------------
