@@ -84,3 +84,12 @@ make sure to return a fragment <> </> to not mess up the styling
 
 -- check the applayout, header and sidebar
 ----------------------
+
+# Building the Sidebar and Main Navigation
+
+const StyledNavLink = styled(NavLink)``              --- Use react NavLink to Styled Components       
+
+# React Icons
+npm i react-icons
+
+----------------------
