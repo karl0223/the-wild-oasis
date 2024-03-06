@@ -56,3 +56,11 @@ css`
 `}
 
 ----------------------
+
+# Building More Reusable Styled Components
+
+Row.defaultProps = {            --- used to set defaultProps
+  type: "vertical",
+};
+
+----------------------
