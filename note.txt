@@ -93,3 +93,22 @@ const StyledNavLink = styled(NavLink)``              --- Use react NavLink to St
 npm i react-icons
 
 ----------------------
+
+# Setting up React Query
+
+npm i @tanstack/react-query
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // cache for 1 minute
+    },
+  },
+});
+
+# Install React Query Devtools
+
+npm i @tanstack/react-query-devtools
+
+# Check App.jsx for the implementation of the react query provider and devtools
+----------------------
