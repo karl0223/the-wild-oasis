@@ -111,4 +111,23 @@ const queryClient = new QueryClient({
 npm i @tanstack/react-query-devtools
 
 # Check App.jsx for the implementation of the react query provider and devtools
+
+----------------------
+
+# Mutations: Deleting a Cabin
+
+  const queryClient = useQueryClient();
+
+  const { isLoading: isDeleting, mutate } = useMutation({
+    mutationFn: deleteCabin,
+    onSuccess: () => {
+      alert("Cabin deleted successfully");
+      queryClient.invalidateQueries({
+        // invalidate the cache for the "cabin" query key to refetch the data
+        queryKey: ["cabins"],
+      });
+    },
+    onError: (err) => alert(err.message),
+  });
+
 ----------------------
