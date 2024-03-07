@@ -131,3 +131,9 @@ npm i @tanstack/react-query-devtools
   });
 
 ----------------------
+
+# Displaying Toast (Notification)
+
+npm i react-hot-toast
+
+----------------------
