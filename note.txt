@@ -137,3 +137,14 @@ npm i @tanstack/react-query-devtools
 npm i react-hot-toast
 
 ----------------------
+
+# React Hook-Form
+
+npm i react-hook-form
+
+
+const { register, handleSubmit } = useForm();
+
+{...register("name")}
+
+----------------------
