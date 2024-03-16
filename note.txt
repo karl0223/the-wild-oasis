@@ -148,3 +148,9 @@ const { register, handleSubmit } = useForm();
 {...register("name")}
 
 ----------------------
+
+# Displaying a Line Chart with the Recharts Library
+
+npm i recharts
+
+----------------------
