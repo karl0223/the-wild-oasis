@@ -88,6 +88,7 @@ function Toggle({ id }) {
     useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation(); // fixed the issue of the menu not closing when clicking outside of it (bubbling phase)
     const rect = e.target.closest("button").getBoundingClientRect();
 
     setPosition({
@@ -107,7 +108,7 @@ function Toggle({ id }) {
 
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
-  const ref = useOutsideClick(close);
+  const ref = useOutsideClick(close, false); // false: bubbling phase to close the menu when clicking outside of it
 
   if (openId !== id) return null;
 

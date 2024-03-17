@@ -164,3 +164,12 @@ npm i react-error-boundary
 -- bugs in event handlers, effect, async will not be caught by the error boundary
 
 ----------------------
+
+# Final Touches + Fixing Bugs
+
+- Fixed the bubbling phase of event handler in Menu
+- Removed the Uploader in the Sidebar
+- Fixed the Booking details when the booking id does not exist
+- Setting the theme (light/dark) depending on the user's default preference
+
+----------------------
