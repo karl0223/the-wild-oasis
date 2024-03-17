@@ -154,3 +154,13 @@ const { register, handleSubmit } = useForm();
 npm i recharts
 
 ----------------------
+
+# Error Boundaries
+
+npm i react-error-boundary
+
+-- same with try catch logic but in react render
+-- only catch errors while react is rendering
+-- bugs in event handlers, effect, async will not be caught by the error boundary
+
+----------------------
