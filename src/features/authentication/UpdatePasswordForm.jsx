@@ -6,6 +6,8 @@ import Input from "../../ui/Input";
 
 import { useUpdateUser } from "./useUpdateUser";
 
+const isProd = import.meta.env.PROD; // Determine if the environment is production or not
+
 function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
@@ -26,7 +28,7 @@ function UpdatePasswordForm() {
           type="password"
           id="password"
           autoComplete="current-password"
-          disabled={isUpdating}
+          disabled={isProd || isUpdating}
           {...register("password", {
             required: "This field is required",
             minLength: {
@@ -45,7 +47,7 @@ function UpdatePasswordForm() {
           type="password"
           autoComplete="new-password"
           id="passwordConfirm"
-          disabled={isUpdating}
+          disabled={isProd || isUpdating}
           {...register("passwordConfirm", {
             required: "This field is required",
             validate: (value) =>
@@ -57,7 +59,7 @@ function UpdatePasswordForm() {
         <Button onClick={reset} type="reset" variation="secondary">
           Cancel
         </Button>
-        <Button disabled={isUpdating}>Update password</Button>
+        <Button disabled={isProd || isUpdating}>Update password</Button>
       </FormRow>
     </Form>
   );
