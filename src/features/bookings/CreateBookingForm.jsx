@@ -9,6 +9,7 @@ import { useCabins } from "../cabins/useCabins";
 
 import Spinner from "../../ui/Spinner";
 import styled from "styled-components";
+import { useMemo, useState } from "react";
 
 const StyledSelect = styled.select`
   font-size: 1.4rem;
@@ -24,11 +25,13 @@ const StyledSelect = styled.select`
   box-shadow: var(--shadow-sm);
 `;
 
-function CreateBookingForm({ bookingToEdit = {}, onCloseModal }) {
-  const { cabins, isLoading: isLoadingCabin } = useCabins();
-
+function CreateBookingForm({
+  cabins,
+  isLoadingCabin,
+  bookingToEdit = {},
+  onCloseModal,
+}) {
   const { id: editId, ...editValues } = bookingToEdit;
-
   const isEditSession = Boolean(editId);
 
   const { register, handleSubmit, reset, getValues, formState } = useForm({
@@ -37,15 +40,31 @@ function CreateBookingForm({ bookingToEdit = {}, onCloseModal }) {
 
   const { errors } = formState;
 
-  if (isLoadingCabin) return <Spinner />;
-
-  const cabinsOptions = cabins.map((cabin) => ({
+  const cabinsOptions = cabins?.map((cabin) => ({
     label: cabin.name,
     value: cabin.id,
   }));
 
+  const [selectedCabin, setSelectedCabin] = useState(cabinsOptions?.[0]?.value);
+  const [numGuest, setNumGuest] = useState(1);
+
+  const { maxCapacity, regularPrice } =
+    cabins?.find((cabin) => cabin.id === Number(selectedCabin)) || {};
+
+  if (isLoadingCabin) return <Spinner />;
+
+  const handleSelectChange = (e) => {
+    setSelectedCabin(e.target.value);
+  };
+
+  const handleNumGuestChange = (e) => {
+    setNumGuest(e.target.value);
+  };
+
   function onSubmit(data) {
-    console.log(data);
+    const calculatedAmount = regularPrice * data.numGuest;
+    const dataWithAmount = { ...data, amount: calculatedAmount };
+    console.log(dataWithAmount);
   }
 
   function onError(error) {
@@ -60,6 +79,8 @@ function CreateBookingForm({ bookingToEdit = {}, onCloseModal }) {
       <FormRow label="Cabin" error={errors?.cabin?.message}>
         <StyledSelect
           {...register("cabin", { required: "This field is required" })}
+          onChange={handleSelectChange}
+          value={selectedCabin}
         >
           {cabinsOptions.map((option) => (
             <option value={option.value} key={option.value}>
@@ -95,13 +116,20 @@ function CreateBookingForm({ bookingToEdit = {}, onCloseModal }) {
           })}
         />
       </FormRow>
-      <FormRow label="Number of Guests" error={errors?.numGuest?.message}>
+      <FormRow
+        label={`Cabin Capacity up to ${maxCapacity}`}
+        error={errors?.numGuest?.message}
+      >
         <Input
           type="number"
           id="numGuest"
+          min={1}
+          max={maxCapacity}
+          defaultValue={1}
           {...register("numGuest", {
             required: "This field is required",
           })}
+          onChange={handleNumGuestChange}
         />
       </FormRow>
       <FormRow label="Status" error={errors?.status?.message}>
@@ -127,10 +155,7 @@ function CreateBookingForm({ bookingToEdit = {}, onCloseModal }) {
           type="text"
           id="amount"
           disabled={true}
-          value={100}
-          //   {...register("amount", {
-          //     required: "This field is required",
-          //   })}
+          value={regularPrice * numGuest}
         />
       </FormRow>
       <FormRow>

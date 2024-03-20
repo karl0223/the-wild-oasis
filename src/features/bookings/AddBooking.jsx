@@ -1,8 +1,11 @@
 import Button from "../../ui/Button";
 import CreateBookingForm from "./CreateBookingForm";
 import Modal from "../../ui/Modal";
+import { useCabins } from "../cabins/useCabins";
 
 function AddBooking() {
+  const { cabins, isLoading: isLoadingCabin } = useCabins();
+
   return (
     <div>
       <Modal>
@@ -10,7 +13,7 @@ function AddBooking() {
           <Button>Add new booking</Button>
         </Modal.Open>
         <Modal.Window name="booking-form">
-          <CreateBookingForm />
+          <CreateBookingForm cabins={cabins} isLoadingCabin={isLoadingCabin} />
         </Modal.Window>
       </Modal>
     </div>
