@@ -52,6 +52,24 @@ const isPaidOptions = [
   },
 ];
 
+const statusOptions = [
+  {
+    key: "unconfirmed",
+    label: "Unconfirmed",
+    value: "unconfirmed",
+  },
+  {
+    key: "checked-in",
+    label: "Checked-in",
+    value: "checked-in",
+  },
+  {
+    key: "checked-out",
+    label: "Checked-out",
+    value: "checked-out",
+  },
+];
+
 function CreateBookingForm({
   cabins,
   isLoadingCabin,
@@ -206,13 +224,13 @@ function CreateBookingForm({
         </StyledSelect>
       </FormRow>
       <FormRow label="Status" error={errors?.status?.message}>
-        <Input
-          type="text"
-          id="status"
-          {...register("status", {
-            required: "This field is required",
-          })}
-        />
+        <StyledSelect {...register("status")}>
+          {statusOptions.map((option) => (
+            <option value={option.value} key={option.key}>
+              {option.label}
+            </option>
+          ))}
+        </StyledSelect>
       </FormRow>
       <FormRow label="Observations" error={errors?.observations?.message}>
         <Textarea
