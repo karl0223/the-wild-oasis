@@ -10,6 +10,7 @@ import { useCabins } from "../cabins/useCabins";
 import Spinner from "../../ui/Spinner";
 import styled from "styled-components";
 import { useMemo, useState } from "react";
+import { useCreateBooking } from "./useCreateBooking";
 
 const StyledSelect = styled.select`
   font-size: 1.4rem;
@@ -25,6 +26,32 @@ const StyledSelect = styled.select`
   box-shadow: var(--shadow-sm);
 `;
 
+const hasBreakfastOptions = [
+  {
+    key: "true1",
+    label: "True",
+    value: true,
+  },
+  {
+    key: "false1",
+    label: "False",
+    value: false,
+  },
+];
+
+const isPaidOptions = [
+  {
+    key: "true2",
+    label: "True",
+    value: true,
+  },
+  {
+    key: "false2",
+    label: "False",
+    value: false,
+  },
+];
+
 function CreateBookingForm({
   cabins,
   isLoadingCabin,
@@ -39,6 +66,8 @@ function CreateBookingForm({
   });
 
   const { errors } = formState;
+
+  const { createBooking, isCreatingBooking } = useCreateBooking({ reset });
 
   const cabinsOptions = cabins?.map((cabin) => ({
     label: cabin.name,
@@ -63,8 +92,32 @@ function CreateBookingForm({
 
   function onSubmit(data) {
     const calculatedAmount = regularPrice * data.numGuest;
-    const dataWithAmount = { ...data, amount: calculatedAmount };
-    console.log(dataWithAmount);
+
+    const newBooking = {
+      cabinId: Number(data.cabin),
+      endDate: data.endDate,
+      guest: data.guest,
+      isPaid: Boolean(data.isPaid),
+      hasBreakfast: Boolean(data.hasBreakfast),
+      numGuest: Number(data.numGuest),
+      observations: data.observations,
+      startDate: data.startDate,
+      status: data.status,
+      totalPrice: calculatedAmount,
+    };
+
+    // if (isEditSession) {
+    //   console.log("Editing booking", dataWithAmount);
+    // } else {
+    //   createBooking(dataWithAmount, {
+    //     onSuccess: () => {
+    //       reset();
+    //       onCloseModal?.();
+    //     },
+    //   });
+    // }
+
+    console.log(newBooking);
   }
 
   function onError(error) {
@@ -131,6 +184,26 @@ function CreateBookingForm({
           })}
           onChange={handleNumGuestChange}
         />
+      </FormRow>
+
+      <FormRow label="hasBreakfast" error={errors?.hasBreakfast?.message}>
+        <StyledSelect {...register("hasBreakfast")}>
+          {hasBreakfastOptions.map((option) => (
+            <option value={option.value} key={option.label}>
+              {option.label}
+            </option>
+          ))}
+        </StyledSelect>
+      </FormRow>
+
+      <FormRow label="isPaid" error={errors?.isPaid?.message}>
+        <StyledSelect {...register("isPaid")}>
+          {isPaidOptions.map((option) => (
+            <option value={option.value} key={option.label}>
+              {option.label}
+            </option>
+          ))}
+        </StyledSelect>
       </FormRow>
       <FormRow label="Status" error={errors?.status?.message}>
         <Input
