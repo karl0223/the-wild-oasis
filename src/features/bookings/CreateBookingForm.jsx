@@ -11,6 +11,8 @@ import Spinner from "../../ui/Spinner";
 import styled from "styled-components";
 import { useMemo, useState } from "react";
 import { useCreateBooking } from "./useCreateBooking";
+import { useSettings } from "../settings/useSettings";
+import { subtractDates } from "../../utils/helpers";
 
 const StyledSelect = styled.select`
   font-size: 1.4rem;
@@ -28,27 +30,27 @@ const StyledSelect = styled.select`
 
 const hasBreakfastOptions = [
   {
-    key: "true1",
-    label: "True",
-    value: true,
-  },
-  {
     key: "false1",
     label: "False",
     value: false,
+  },
+  {
+    key: "true1",
+    label: "True",
+    value: true,
   },
 ];
 
 const isPaidOptions = [
   {
-    key: "true2",
-    label: "True",
-    value: true,
-  },
-  {
     key: "false2",
     label: "False",
     value: false,
+  },
+  {
+    key: "true2",
+    label: "True",
+    value: true,
   },
 ];
 
@@ -73,6 +75,7 @@ const statusOptions = [
 function CreateBookingForm({
   cabins,
   isLoadingCabin,
+  guestId,
   bookingToEdit = {},
   onCloseModal,
 }) {
@@ -82,6 +85,8 @@ function CreateBookingForm({
   const { register, handleSubmit, reset, getValues, formState } = useForm({
     defaultValues: isEditSession ? editValues : {},
   });
+
+  const { isLoading: isLoadingSettings, error, settings } = useSettings();
 
   const { errors } = formState;
 
@@ -93,49 +98,55 @@ function CreateBookingForm({
   }));
 
   const [selectedCabin, setSelectedCabin] = useState(cabinsOptions?.[0]?.value);
-  const [numGuest, setNumGuest] = useState(1);
 
   const { maxCapacity, regularPrice } =
     cabins?.find((cabin) => cabin.id === Number(selectedCabin)) || {};
 
-  if (isLoadingCabin) return <Spinner />;
+  if (isLoadingCabin || isLoadingSettings) return <Spinner />;
 
   const handleSelectChange = (e) => {
     setSelectedCabin(e.target.value);
   };
 
-  const handleNumGuestChange = (e) => {
-    setNumGuest(e.target.value);
-  };
-
   function onSubmit(data) {
-    const calculatedAmount = regularPrice * data.numGuest;
+    const numNights = subtractDates(data.endDate, data.startDate) - 1;
+
+    const calculatedAmount = regularPrice * numNights;
+
+    const optionalBreakfastPrice =
+      settings.breakfastPrice * numNights * Number(data.numGuests);
+
+    const boolHasBreakfast = JSON.parse(data.hasBreakfast);
+    const boolIsPaid = JSON.parse(data.isPaid);
 
     const newBooking = {
       cabinId: Number(data.cabin),
       endDate: data.endDate,
-      guest: data.guest,
-      isPaid: Boolean(data.isPaid),
-      hasBreakfast: Boolean(data.hasBreakfast),
-      numGuest: Number(data.numGuest),
+      guestId: guestId,
+      isPaid: boolIsPaid,
+      hasBreakfast: boolHasBreakfast,
+      numGuests: Number(data.numGuests),
       observations: data.observations,
       startDate: data.startDate,
       status: data.status,
-      totalPrice: calculatedAmount,
+      totalPrice: boolHasBreakfast
+        ? calculatedAmount + optionalBreakfastPrice
+        : calculatedAmount,
+      cabinPrice: calculatedAmount,
+      extrasPrice: boolHasBreakfast ? optionalBreakfastPrice : 0,
+      numNights,
     };
 
-    // if (isEditSession) {
-    //   console.log("Editing booking", dataWithAmount);
-    // } else {
-    //   createBooking(dataWithAmount, {
-    //     onSuccess: () => {
-    //       reset();
-    //       onCloseModal?.();
-    //     },
-    //   });
-    // }
-
-    console.log(newBooking);
+    if (isEditSession) {
+      console.log("Editing booking", newBooking);
+    } else {
+      createBooking(newBooking, {
+        onSuccess: () => {
+          reset();
+          onCloseModal?.();
+        },
+      });
+    }
   }
 
   function onError(error) {
@@ -160,15 +171,7 @@ function CreateBookingForm({
           ))}
         </StyledSelect>
       </FormRow>
-      <FormRow label="Guest" error={errors?.guest?.message}>
-        <Input
-          type="text"
-          id="guest"
-          {...register("guest", {
-            required: "This field is required",
-          })}
-        />
-      </FormRow>
+
       <FormRow label="Start Date" error={errors?.startDate?.message}>
         <Input
           type="date"
@@ -193,14 +196,13 @@ function CreateBookingForm({
       >
         <Input
           type="number"
-          id="numGuest"
+          id="numGuests"
           min={1}
           max={maxCapacity}
           defaultValue={1}
-          {...register("numGuest", {
+          {...register("numGuests", {
             required: "This field is required",
           })}
-          onChange={handleNumGuestChange}
         />
       </FormRow>
 
@@ -241,13 +243,8 @@ function CreateBookingForm({
           })}
         />
       </FormRow>
-      <FormRow label="Amount">
-        <Input
-          type="text"
-          id="amount"
-          disabled={true}
-          value={regularPrice * numGuest}
-        />
+      <FormRow label="Cabin Price">
+        <Input type="text" id="amount" disabled={true} value={regularPrice} />
       </FormRow>
       <FormRow>
         {/* type is an HTML attribute! */}

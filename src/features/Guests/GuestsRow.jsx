@@ -2,7 +2,11 @@ import styled from "styled-components";
 
 import Table from "../../ui/Table";
 
+import { HiMiniArrowRightOnRectangle } from "react-icons/hi2";
+
 import { useNavigate } from "react-router-dom";
+import Button from "../../ui/Button";
+import AddBooking from "../bookings/AddBooking";
 
 const FullName = styled.div`
   font-weight: 500;
@@ -27,6 +31,7 @@ function GuestsRow({
       <div>{nationality}</div>
       <div>{nationalID}</div>
       <Img src={countryFlag} alt={nationality} />
+      <AddBooking guestId={guestId} />
     </Table.Row>
   );
 }
